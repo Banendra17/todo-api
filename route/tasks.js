@@ -2,12 +2,21 @@ const express = require('express');
 const router = express.Router();
 const Task = require('../model/Task');
 
-// Tambah task
+// routes/tasks.js
 router.post('/', async (req, res) => {
-  const task = new Task({ title: req.body.title });
+  console.log('📩 POST /tasks data:', req.body); // Untuk debugging
+
+  const task = new Task({
+    title: req.body.title,
+    description: req.body.description,
+    date: req.body.date ? new Date(req.body.date) : undefined // ✅ Gunakan tanggal dari frontend jika ada
+  });
+
   await task.save();
   res.status(201).json(task);
 });
+
+
 
 // Lihat semua task
 router.get('/', async (req, res) => {
@@ -26,5 +35,7 @@ router.delete('/:id', async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
   res.status(204).end();
 });
+
+
 
 module.exports = router;
