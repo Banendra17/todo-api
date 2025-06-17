@@ -24,11 +24,18 @@ router.get('/', async (req, res) => {
   res.json(tasks);
 });
 
-// Update task
+// Update task (routes/tasks.js)
 router.put('/:id', async (req, res) => {
-  const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(task);
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+    res.json(task);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
+
 
 // Hapus task
 router.delete('/:id', async (req, res) => {
